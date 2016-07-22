@@ -1,0 +1,42 @@
+<App>
+    <JavaScript>
+		var Observable = require("FuseJS/Observable");
+        var points = Observable({value:10.0, label:"hi"}, {value:30.54}, {value:0.282786, label:"woo"}, {value:30.1}, {value:80});
+        var points2 = Observable({value:0.0, label:"more?"}, {value:3.54}, {value:4.282786, label:"yup"}, {value:10.1}, {value:40, label:"another line"});
+
+        exports.points = points;
+        exports.points2 = points2;
+
+        exports.addSomePoint = function() {
+            var val = (10 + Math.random() * 40);
+            var val2 = (10 + Math.random() * 40);
+            exports.points.add({value: val});
+            exports.points2.add({value: val2});
+        }
+    </JavaScript>
+    <DockPanel>
+        <TopFrameBackground DockPanel.Dock="Top" />
+        <StackPanel>
+            <Button Text="Add More Points" Clicked="{addSomePoint}" Height="100" />
+            <NativeViewHost>
+                <HelloCharts.LineGraph Width="700" Height="500"
+                                       HAxisStart="0" HAxisEnd="200" HAxisStep="5"
+                                       VAxisStart="0" VAxisEnd="100" VAxisStep="5"
+                                       ZoomType="Horizontal">
+                    <HelloCharts.Line Color="BLUE">
+                        <Each Items="{points}">
+				            <HelloCharts.GraphPoint Value="{value}" Label="{label}" />
+			            </Each>
+                    </HelloCharts.Line>
+                    <HelloCharts.Line Color="RED" Interpolate="false">
+                        <Each Items="{points2}">
+				            <HelloCharts.GraphPoint Value="{value}" Label="{label}" />
+			            </Each>
+                    </HelloCharts.Line>
+                </HelloCharts.LineGraph>
+            </NativeViewHost>
+            <Button Text="above this" Height="100"  />
+        </StackPanel>
+        <BottomBarBackground DockPanel.Dock="Bottom" />
+    </DockPanel>
+</App>

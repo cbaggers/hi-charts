@@ -10,115 +10,115 @@ using Fuse.Controls.Native.Android;
 
 namespace HelloCharts
 {
-	internal interface ILineGraphView
-	{
+    internal interface ILineGraphView
+    {
         void UpdatePoints(Line line, ObservableList<GraphPoint> points);
         void SetHorizontalAxis(Axis a);
         void SetVerticalAxis(Axis a);
         void SetZoomType(string zoomType);
-	}
+    }
 
     public class Line : Panel
-	{
+    {
         LineGraph _graph { get { return Parent as LineGraph; } }
 
-		string _color = "BLUE";
-		public string Color {
-			get
+        string _color = "BLUE";
+        public string Color {
+            get
             {
                 return _color;
             }
-			set
+            set
             {
-				_color = value ?? "BLUE";
-			}
-		}
+                _color = value ?? "BLUE";
+            }
+        }
 
-		string _interpolate = "true";
-		public string Interpolate {
-			get
+        string _interpolate = "true";
+        public string Interpolate {
+            get
             {
                 return _interpolate;
             }
-			set
+            set
             {
-				_interpolate = value ?? "BLUE";
-			}
-		}
+                _interpolate = value ?? "BLUE";
+            }
+        }
 
         ObservableList<GraphPoint> _points;
-		public ObservableList<GraphPoint> Points
-		{
-			get
-			{
-				if(_points==null) _points = new ObservableList<GraphPoint>(OnPointAdded, OnPointRemoved);
-				return _points;
-			}
-		}
+        public ObservableList<GraphPoint> Points
+        {
+            get
+            {
+                if(_points==null) _points = new ObservableList<GraphPoint>(OnPointAdded, OnPointRemoved);
+                return _points;
+            }
+        }
 
-		internal void AddPoint(GraphPoint gp)
-		{
-			Points.Add(gp);
-		}
+        internal void AddPoint(GraphPoint gp)
+        {
+            Points.Add(gp);
+        }
 
-		internal void RemovePoint(GraphPoint gp)
-		{
-			Points.Remove(gp);
-		}
+        internal void RemovePoint(GraphPoint gp)
+        {
+            Points.Remove(gp);
+        }
 
         void OnPointAdded(GraphPoint gp)
-		{
-			UpdatePointsNextFrame();
-		}
+        {
+            UpdatePointsNextFrame();
+        }
 
-		void OnPointRemoved(GraphPoint gp)
-		{
-			UpdatePointsNextFrame();
-		}
+        void OnPointRemoved(GraphPoint gp)
+        {
+            UpdatePointsNextFrame();
+        }
 
         bool _willUpdatePointsNextFrame;
-		internal void UpdatePointsNextFrame()
-		{
-			if(_willUpdatePointsNextFrame) return;
-			UpdateManager.PerformNextFrame(DeferredPointUpdate, UpdateStage.Primary);
-			_willUpdatePointsNextFrame = true;
-		}
+        internal void UpdatePointsNextFrame()
+        {
+            if(_willUpdatePointsNextFrame) return;
+            UpdateManager.PerformNextFrame(DeferredPointUpdate, UpdateStage.Primary);
+            _willUpdatePointsNextFrame = true;
+        }
 
-		void DeferredPointUpdate()
-		{
-			_willUpdatePointsNextFrame = false;
-			_graph.ChartView.UpdatePoints(this, _points);
-		}
+        void DeferredPointUpdate()
+        {
+            _willUpdatePointsNextFrame = false;
+            _graph.ChartView.UpdatePoints(this, _points);
+        }
 
         public void ClearPoints()
         {
-			_points.Clear();
-			_graph.ChartView.UpdatePoints(this, _points);
-		}
+            _points.Clear();
+            _graph.ChartView.UpdatePoints(this, _points);
+        }
     }
 
     public class LineGraph : Panel
-	{
-		internal ILineGraphView ChartView
-		{
-			get { return NativeView as ILineGraphView; }
-		}
+    {
+        internal ILineGraphView ChartView
+        {
+            get { return NativeView as ILineGraphView; }
+        }
 
-		protected override IView CreateNativeView()
-		{
-			if defined(Android)
+        protected override IView CreateNativeView()
+        {
+            if defined(Android)
             {
                 return new AndroidLineGraph(this);
             }
-			else if defined(iOS)
+            else if defined(iOS)
             {
                 return base.CreateNativeView();
             }
-			else
-			{
-				return base.CreateNativeView();
-			}
-		}
+            else
+            {
+                return base.CreateNativeView();
+            }
+        }
 
         //------------------
 
@@ -127,35 +127,35 @@ namespace HelloCharts
         double _hAxisStep = -1;
 
         public double HAxisStart
-		{
+        {
             get { return _hAxisStart; }
-			set {
+            set {
                 _hAxisStart = value;
                 if (_hAxisStart>=0 && _hAxisEnd>=0 && _hAxisStep>=0)
                     UpdateAxisNextFrame();
             }
-		}
+        }
 
 
         public double HAxisEnd
-		{
+        {
             get { return _hAxisEnd; }
-			set {
+            set {
                 _hAxisEnd = value;
                 if (_hAxisStart>=0 && _hAxisEnd>=0 && _hAxisStep>=0)
                     UpdateAxisNextFrame();
             }
-		}
+        }
 
         public double HAxisStep
-		{
+        {
             get { return _hAxisStep; }
-			set {
+            set {
                 _hAxisStep = value;
                 if (_hAxisStart>=0 && _hAxisEnd>=0 && _hAxisStep>=0)
                     UpdateAxisNextFrame();
             }
-		}
+        }
 
         //------------------
 
@@ -164,43 +164,43 @@ namespace HelloCharts
         double _vAxisStep = -1;
 
         public double VAxisStart
-		{
+        {
             get { return _vAxisStart; }
-			set {
+            set {
                 _vAxisStart = value;
                 if (_vAxisStart>=0 && _vAxisEnd>=0 && _vAxisStep>=0)
                     UpdateAxisNextFrame();
             }
-		}
+        }
 
 
         public double VAxisEnd
-		{
+        {
             get { return _vAxisEnd; }
-			set {
+            set {
                 _vAxisEnd = value;
                 if (_vAxisStart>=0 && _vAxisEnd>=0 && _vAxisStep>=0)
                     UpdateAxisNextFrame();
             }
-		}
+        }
 
         public double VAxisStep
-		{
+        {
             get { return _vAxisStep; }
-			set {
+            set {
                 _vAxisStep = value;
                 if (_vAxisStart>=0 && _vAxisEnd>=0 && _vAxisStep>=0)
                     UpdateAxisNextFrame();
             }
-		}
+        }
 
         bool _willUpdateAxisNextFrame;
-		internal void UpdateAxisNextFrame()
-		{
-			if(_willUpdateAxisNextFrame) return;
-			UpdateManager.PerformNextFrame(DeferredAxisUpdate, UpdateStage.Primary);
-			_willUpdateAxisNextFrame = true;
-		}
+        internal void UpdateAxisNextFrame()
+        {
+            if(_willUpdateAxisNextFrame) return;
+            UpdateManager.PerformNextFrame(DeferredAxisUpdate, UpdateStage.Primary);
+            _willUpdateAxisNextFrame = true;
+        }
 
         void DeferredAxisUpdate()
         {
@@ -213,27 +213,27 @@ namespace HelloCharts
 
         string _zoomType;
         public string ZoomType
-		{
+        {
             get { return _zoomType; }
-			set {
+            set {
                 _zoomType = value;
                 UpdateZoomNextFrame();
             }
-		}
+        }
 
         bool _willUpdateZoomNextFrame;
-		internal void UpdateZoomNextFrame()
-		{
-			if(_willUpdateZoomNextFrame) return;
-			UpdateManager.PerformNextFrame(DeferredZoomUpdate, UpdateStage.Primary);
-			_willUpdateZoomNextFrame = true;
-		}
+        internal void UpdateZoomNextFrame()
+        {
+            if(_willUpdateZoomNextFrame) return;
+            UpdateManager.PerformNextFrame(DeferredZoomUpdate, UpdateStage.Primary);
+            _willUpdateZoomNextFrame = true;
+        }
 
         void DeferredZoomUpdate()
         {
             ChartView.SetZoomType(_zoomType);
         }
-	}
+    }
 
     //----------------------------------------------------------------------
 
@@ -247,19 +247,19 @@ namespace HelloCharts
                     "lecho.lib.hellocharts.model.PointValue",
                     "lecho.lib.hellocharts.view.LineChartView")]
     [Require("Gradle.Dependency.Compile", "com.github.lecho:hellocharts-library:1.5.8@aar")]
-	extern(Android) public class AndroidLineGraph : LeafView, ILineGraphView
-	{
+    extern(Android) public class AndroidLineGraph : LeafView, ILineGraphView
+    {
         LineGraph _host;
 
-		public AndroidLineGraph(LineGraph host) : base(Create())
+        public AndroidLineGraph(LineGraph host) : base(Create())
         {
             _host = host;
         }
 
 
-		[Foreign(Language.Java)]
-		static Java.Object Create()
-		@{
+        [Foreign(Language.Java)]
+        static Java.Object Create()
+        @{
             LineChartView chart = new LineChartView(com.fuse.Activity.getRootActivity());
 
             List<PointValue> values = new ArrayList<PointValue>();
@@ -271,7 +271,7 @@ namespace HelloCharts
             data.setLines(lines);
             chart.setLineChartData(data);
             return chart;
-		@}
+        @}
 
         Dictionary<int, List<GraphPoint>> previousLines = new Dictionary<int, List<GraphPoint>>();
         Dictionary<int, int> lineIDs = new Dictionary<int, int>();
@@ -292,7 +292,7 @@ namespace HelloCharts
             int i = 0;
             previousPoints.Clear();
 
-			foreach(GraphPoint gp in points)
+            foreach(GraphPoint gp in points)
             {
                 double x = i;
                 double y = gp.Value;
@@ -311,11 +311,11 @@ namespace HelloCharts
                 TrimPoints(lineID, i);
 
             StartAnimation();
-		}
+        }
 
         [Foreign(Language.Java)]
-		void AddPoint(int lineID, double x, double y, string label, string color, bool interp)
-		@{
+        void AddPoint(int lineID, double x, double y, string label, string color, bool interp)
+        @{
             LineChartView chart = (LineChartView)@{AndroidLineGraph:Of(_this).Handle:Get()};
             LineChartData data = (LineChartData)chart.getChartData();
             List<Line> lines = data.getLines();
@@ -331,31 +331,31 @@ namespace HelloCharts
             p.setTarget((float)x, (float)y);
             if (label!=null) p.setLabel(label);
             line.getValues().add(p);
-		@}
+        @}
 
         [Foreign(Language.Java)]
-		void UpdatePoint(int lineID, int i, double x, double y, string label)
-		@{
+        void UpdatePoint(int lineID, int i, double x, double y, string label)
+        @{
             LineChartView chart = (LineChartView)@{AndroidLineGraph:Of(_this).Handle:Get()};
             LineChartData data = (LineChartData)chart.getChartData();
             Line line = data.getLines().get(lineID);
             PointValue p = line.getValues().get(i);
             p.setTarget((float)x, (float)y);
             if (label!=null) p.setLabel(label);
-		@}
+        @}
 
         [Foreign(Language.Java)]
-		void TrimPoints(int lineID, int trimPoint)
-		@{
+        void TrimPoints(int lineID, int trimPoint)
+        @{
             LineChartView chart = (LineChartView)@{AndroidLineGraph:Of(_this).Handle:Get()};
             LineChartData data = (LineChartData)chart.getChartData();
             Line line = data.getLines().get(lineID);
             line.setValues(line.getValues().subList(0, trimPoint));
-		@}
+        @}
 
         [Foreign(Language.Java)]
-		void StartAnimation()
-		@{
+        void StartAnimation()
+        @{
             LineChartView chart = (LineChartView)@{AndroidLineGraph:Of(_this).Handle:Get()};
             chart.startDataAnimation();
         @}
@@ -367,8 +367,8 @@ namespace HelloCharts
         }
 
         [Foreign(Language.Java)]
-		void ClearInner()
-		@{
+        void ClearInner()
+        @{
             LineChartView chart = (LineChartView)@{AndroidLineGraph:Of(_this).Handle:Get()};
 
             List<Line> lines = new ArrayList<Line>();
@@ -382,20 +382,20 @@ namespace HelloCharts
 
             newData.setLines(lines);
             chart.setLineChartData(newData);
-		@}
+        @}
 
-		public void SetHorizontalAxis(Axis a)
+        public void SetHorizontalAxis(Axis a)
         {
             SetHorizontalAxisInner((float)a.Start, (float)a.End, (float)a.Step);
         }
 
         [Foreign(Language.Java)]
         void SetHorizontalAxisInner(float start, float end, float step)
-		@{
+        @{
             LineChartView chart = (LineChartView)@{AndroidLineGraph:Of(_this).Handle:Get()};
             LineChartData data = (LineChartData)chart.getChartData();
             data.setAxisXBottom(Axis.generateAxisFromRange(start, end, step));
-		@}
+        @}
 
         public void SetVerticalAxis(Axis a)
         {
@@ -404,11 +404,11 @@ namespace HelloCharts
 
         [Foreign(Language.Java)]
         void SetVerticalAxisInner(float start, float end, float step)
-		@{
+        @{
             LineChartView chart = (LineChartView)@{AndroidLineGraph:Of(_this).Handle:Get()};
             LineChartData data = (LineChartData)chart.getChartData();
             data.setAxisYLeft(Axis.generateAxisFromRange(start, end, step));
-		@}
+        @}
 
         [Foreign(Language.Java)]
         public void SetZoomType(string _zoomType)
@@ -424,7 +424,7 @@ namespace HelloCharts
                 chart.setZoomType(ZoomType.HORIZONTAL_AND_VERTICAL);
         @}
 
-	}
+    }
 
     //----------------------------------------------------------------------
 

@@ -11,7 +11,7 @@ using Fuse.Controls.Native.Android;
 namespace HelloCharts
 {
     public struct Axis
-	{
+    {
         public double Start;
         public double End;
         public double Step;
@@ -25,55 +25,55 @@ namespace HelloCharts
     }
 
     public class GraphPoint : Node
-	{
-		double _value;
-		public double Value {
-			get
+    {
+        double _value;
+        public double Value {
+            get
             {
                 return _value;
             }
-			set
+            set
             {
-				_value = value;
-				MarkDirty();
-			}
-		}
+                _value = value;
+                MarkDirty();
+            }
+        }
 
-		string _label = "";
-		public string Label {
-			get
+        string _label = "";
+        public string Label {
+            get
             {
                 return _label;
             }
-			set
+            set
             {
-				_label = value ?? "";
-				MarkDirty();
-			}
-		}
+                _label = value ?? "";
+                MarkDirty();
+            }
+        }
 
-		protected override void OnRooted()
-		{
-			base.OnRooted();
-			Line chart = Parent as Line;
-			if(chart != null) chart.AddPoint(this);
-		}
+        protected override void OnRooted()
+        {
+            base.OnRooted();
+            Line chart = Parent as Line;
+            if(chart != null) chart.AddPoint(this);
+        }
 
-		protected override void OnUnrooted()
-		{
-			base.OnUnrooted();
-			Line chart = Parent as Line;
-			if(chart != null) chart.RemovePoint(this);
-		}
+        protected override void OnUnrooted()
+        {
+            base.OnUnrooted();
+            Line chart = Parent as Line;
+            if(chart != null) chart.RemovePoint(this);
+        }
 
-		void MarkDirty()
-		{
-			Line chart = Parent as Line;
-			if(chart != null) chart.UpdatePointsNextFrame();
-		}
-	}
+        void MarkDirty()
+        {
+            Line chart = Parent as Line;
+            if(chart != null) chart.UpdatePointsNextFrame();
+        }
+    }
 
     public sealed class LineGraphPoint : GraphPoint
-	{
-	}
+    {
+    }
 }
